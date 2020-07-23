@@ -14,8 +14,16 @@ import groovy.transform.CompileStatic
 class frink_notebook {
 
    public static class FrinkVisitor extends AbstractVisitor {
+      Frink frink = new Frink()
       public void visit(IndentedCodeBlock indentedCodeBlock) {
          println "=======> FRINK ======>\n${indentedCodeBlock.literal}\n=============================\n"
+
+         indentedCodeBlock.literal.split(/(?ms)\n/).eachWithIndex {
+             String line, int index
+             ->
+             String result = frink.parseString(line)
+             println "${1+index}: $line => $result"
+         }
       }
    }
 
@@ -34,12 +42,12 @@ class frink_notebook {
       println html_out
 
 
-      Frink frink = new Frink()
+//      Frink frink = new Frink()
 
-      String frink_expr = 'gallon^(1/3) -> inches'
+//      String frink_expr = 'gallon^(1/3) -> inches'
 
-      String results = frink.parseString(frink_expr)
+//      String results = frink.parseString(frink_expr)
 
-      println results.replaceAll(/],/, '],\n')
+//      println results.replaceAll(/],/, '],\n')
    }
 }
