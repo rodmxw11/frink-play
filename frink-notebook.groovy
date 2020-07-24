@@ -21,11 +21,27 @@ class frink_notebook {
          indentedCodeBlock.literal.split(/(?ms)\n/).eachWithIndex {
              String line, int index
              ->
-             String result = frink.parseString(line)
-             println "${1+index}: $line => $result"
-         }
-      }
-   }
+             int line_num = index+1
+             String[] line_parts = line.split(/=>/)
+             switch (line_parts.length) {
+             case 0:
+                println "$line_num:"
+                break
+             case 1:
+                frink.parseString(line_parts[0])
+                println "$line_num: ${line_parts[0]}" 
+                break
+             case 2:
+                String results = frink.parseString("(${line_parts[0]}) -> ${line_parts[1]}")
+                println "$line_num: ${line_parts[0]} => $results ${line_parts[1]}"
+                break
+             default:
+                println "$line_num: ERROR: $line"
+                break
+             } //endswitch
+         } //endeachwithindex
+      } //endmethod visit
+   } //endclass FrinkVisitor
 
    private static String fname = 'finance-calca.md'
 
